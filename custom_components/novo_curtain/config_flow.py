@@ -2,24 +2,22 @@
 
 from __future__ import annotations
 
+import serial
+
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.helpers import selector
-from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from slugify import slugify
 
 from .api import (
-    NovoCurtainApiClient,
-    NovoCurtainApiClientAuthenticationError,
-    NovoCurtainApiClientCommunicationError,
-    NovoCurtainApiClientError,
+    NovoSerialClient,
+    NovoSerialClientError,
 )
-from .const import DOMAIN, LOGGER
+from .const import DOMAIN, LOGGER, CONF_SERIAL_PATH, CONF_ADDRESS, CONF_CHANNEL
 
 
-class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for Blueprint."""
+class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+    """Config flow for NovoCurtain."""
 
     VERSION = 1
 
@@ -32,16 +30,11 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 await self._test_credentials(
-                    username=user_input[CONF_USERNAME],
-                    password=user_input[CONF_PASSWORD],
+                    serial_path=user_input[CONF_SERIAL_PATH],
+                    address=user_input[CONF_ADDRESS],
+                    channel=user_input[CONF_CHANNEL],
                 )
-            except NovoCurtainApiClientAuthenticationError as exception:
-                LOGGER.warning(exception)
-                _errors["base"] = "auth"
-            except NovoCurtainApiClientCommunicationError as exception:
-                LOGGER.error(exception)
-                _errors["base"] = "connection"
-            except NovoCurtainApiClientError as exception:
+            except NovoSerialClientError as exception:
                 LOGGER.exception(exception)
                 _errors["base"] = "unknown"
             else:
@@ -49,11 +42,11 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     ## Do NOT use this in production code
                     ## The unique_id should never be something that can change
                     ## https://developers.home-assistant.io/docs/config_entries_config_flow_handler#unique-ids
-                    unique_id=slugify(user_input[CONF_USERNAME])
+                    unique_id=slugify(user_input[CONF_SERIAL_PATH])
                 )
                 self._abort_if_unique_id_configured()
                 return self.async_create_entry(
-                    title=user_input[CONF_USERNAME],
+                    title=user_input[CONF_SERIAL_PATH],
                     data=user_input,
                 )
 
@@ -62,16 +55,23 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(
-                        CONF_USERNAME,
-                        default=(user_input or {}).get(CONF_USERNAME, vol.UNDEFINED),
+                        CONF_SERIAL_PATH,
+                        default=(user_input or {}).get(CONF_SERIAL_PATH, vol.UNDEFINED),
                     ): selector.TextSelector(
                         selector.TextSelectorConfig(
                             type=selector.TextSelectorType.TEXT,
                         ),
                     ),
-                    vol.Required(CONF_PASSWORD): selector.TextSelector(
+                    vol.Required(CONF_ADDRESS): selector.TextSelector(
                         selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.PASSWORD,
+                            type=selector.TextSelectorType.NUMBER,
+                        ),
+                    ),
+                    vol.Required(CONF_CHANNEL): selector.NumberSelector(
+                        selector.NumberSelectorConfig(
+                            min=0x01,
+                            max=0xFE,
+                            step=1,
                         ),
                     ),
                 },
@@ -79,11 +79,13 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors=_errors,
         )
 
-    async def _test_credentials(self, username: str, password: str) -> None:
+    async def _test_credentials(
+        self, serial_path: str, address: str, channel: int
+    ) -> None:
         """Validate credentials."""
-        client = NovoCurtainApiClient(
-            username=username,
-            password=password,
-            session=async_create_clientsession(self.hass),
+        serial_port = serial.Serial(serial_path, baudrate=9600, timeout=1)
+        address_int = int(address, base=0)
+        client = NovoSerialClient(
+            serial=serial_port, address=address_int, channel=channel
         )
-        await client.async_get_data()
+        await client.async_query_position()

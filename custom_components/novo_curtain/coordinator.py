@@ -4,20 +4,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .api import (
-    NovoCurtainApiClientAuthenticationError,
-    NovoCurtainApiClientError,
-)
+from .api import NovoSerialClientCommunicationError
 
 if TYPE_CHECKING:
     from .data import NovoCurtainConfigEntry
 
 
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
-class BlueprintDataUpdateCoordinator(DataUpdateCoordinator):
+class NovoCurtainDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
     config_entry: NovoCurtainConfigEntry
@@ -25,8 +21,6 @@ class BlueprintDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self) -> Any:
         """Update data via library."""
         try:
-            return await self.config_entry.runtime_data.client.async_get_data()
-        except NovoCurtainApiClientAuthenticationError as exception:
-            raise ConfigEntryAuthFailed(exception) from exception
-        except NovoCurtainApiClientError as exception:
+            return await self.config_entry.runtime_data.client.async_query_position()
+        except NovoSerialClientCommunicationError as exception:
             raise UpdateFailed(exception) from exception

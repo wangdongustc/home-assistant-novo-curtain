@@ -9,8 +9,8 @@ if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.loader import Integration
 
-    from .api import NovoCurtainApiClient
-    from .coordinator import BlueprintDataUpdateCoordinator
+    from .api import NovoSerialClient
+    from .coordinator import NovoCurtainDataUpdateCoordinator
 
 
 type NovoCurtainConfigEntry = ConfigEntry[NovoCurtainData]
@@ -18,8 +18,8 @@ type NovoCurtainConfigEntry = ConfigEntry[NovoCurtainData]
 
 @dataclass
 class NovoCurtainData:
-    """Data for the Blueprint integration."""
+    """Data for the NovoCurtain integration."""
 
-    client: NovoCurtainApiClient
-    coordinator: BlueprintDataUpdateCoordinator
+    client: NovoSerialClient
+    coordinator: NovoCurtainDataUpdateCoordinator
     integration: Integration
