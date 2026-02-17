@@ -7,16 +7,18 @@ https://github.com/wangdongustc/home-assistant-novo-curtain
 
 from __future__ import annotations
 
+import serial
+
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
+from homeassistant.const import Platform
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.loader import async_get_loaded_integration
 
-from .api import NovoCurtainApiClient
-from .const import DOMAIN, LOGGER
-from .coordinator import BlueprintDataUpdateCoordinator
+from .api import NovoSerialClient
+from .const import DOMAIN, LOGGER, CONF_SERIAL_PATH, CONF_ADDRESS, CONF_CHANNEL
+from .coordinator import NovoCurtainDataUpdateCoordinator
 from .data import NovoCurtainData
 
 if TYPE_CHECKING:
@@ -25,9 +27,7 @@ if TYPE_CHECKING:
     from .data import NovoCurtainConfigEntry
 
 PLATFORMS: list[Platform] = [
-    Platform.SENSOR,
-    Platform.BINARY_SENSOR,
-    Platform.SWITCH,
+    Platform.COVER,
 ]
 
 
@@ -37,17 +37,19 @@ async def async_setup_entry(
     entry: NovoCurtainConfigEntry,
 ) -> bool:
     """Set up this integration using UI."""
-    coordinator = BlueprintDataUpdateCoordinator(
+    coordinator = NovoCurtainDataUpdateCoordinator(
         hass=hass,
         logger=LOGGER,
         name=DOMAIN,
         update_interval=timedelta(hours=1),
     )
     entry.runtime_data = NovoCurtainData(
-        client=NovoCurtainApiClient(
-            username=entry.data[CONF_USERNAME],
-            password=entry.data[CONF_PASSWORD],
-            session=async_get_clientsession(hass),
+        client=NovoSerialClient(
+            serial=serial.Serial(
+                entry.data[CONF_SERIAL_PATH], baudrate=9600, timeout=1
+            ),
+            address=int(entry.data[CONF_ADDRESS], base=0),
+            channel=int(entry.data[CONF_CHANNEL], base=0),
         ),
         integration=async_get_loaded_integration(hass, entry.domain),
         coordinator=coordinator,

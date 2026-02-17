@@ -20,6 +20,8 @@ class NovoCurtainDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self) -> Any:
         """Update data via library."""
+        # pass
+
         try:
             return await self.config_entry.runtime_data.client.async_query_position()
         except NovoSerialClientCommunicationError as exception:

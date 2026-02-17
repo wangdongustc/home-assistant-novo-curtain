@@ -41,5 +41,12 @@
         "ghcr.io/devcontainers-extra/features/apt-packages:1": {
             "packages": "ffmpeg,libturbojpeg0,libpcap-dev"
         }
-    }
+    },
+    "mounts": [
+        "source=/dev/ttyACM0,target=/dev/ttyACM0,type=bind,consistency=cached",
+        // 或用 by-id 更稳：source=/dev/serial/by-id/usb-xxx,target=/dev/serial/by-id/usb-xxx,type=bind
+    ],
+    "runArgs": [
+        "--device=/dev/ttyACM0"
+    ] // 让容器能访问设备
 }

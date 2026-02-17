@@ -58,7 +58,7 @@ class NovoSerialClient:
 
     def calc_checksum(self, data: list[int]) -> int:
         """Calculate the checksum for a command."""
-        return sum(data) % 256
+        return sum(data) & 0xFF
 
     def build_command(self, command: int, params: list[int] | None = None) -> bytes:
         """Build a command to send to the curtain."""
@@ -75,6 +75,7 @@ class NovoSerialClient:
             *params,
         ]
         checksum = self.calc_checksum(command_bytes)
+        _LOGGER.error("Checksum: %s, all: %s", checksum, command_bytes)
         return bytes([*command_bytes, checksum])
 
     def parse_response(self, data: bytes) -> dict[str, Any]:

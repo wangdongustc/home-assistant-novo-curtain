@@ -64,14 +64,12 @@ class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     ),
                     vol.Required(CONF_ADDRESS): selector.TextSelector(
                         selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.NUMBER,
+                            type=selector.TextSelectorType.TEXT,
                         ),
                     ),
-                    vol.Required(CONF_CHANNEL): selector.NumberSelector(
-                        selector.NumberSelectorConfig(
-                            min=0x01,
-                            max=0xFE,
-                            step=1,
+                    vol.Required(CONF_CHANNEL): selector.TextSelector(
+                        selector.TextSelectorConfig(
+                            type=selector.TextSelectorType.NUMBER,
                         ),
                     ),
                 },
@@ -80,12 +78,13 @@ class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def _test_credentials(
-        self, serial_path: str, address: str, channel: int
+        self, serial_path: str, address: str, channel: str
     ) -> None:
         """Validate credentials."""
         serial_port = serial.Serial(serial_path, baudrate=9600, timeout=1)
         address_int = int(address, base=0)
+        channel_int = int(channel, base=0)
         client = NovoSerialClient(
-            serial=serial_port, address=address_int, channel=channel
+            serial=serial_port, address=address_int, channel=channel_int
         )
         await client.async_query_position()
