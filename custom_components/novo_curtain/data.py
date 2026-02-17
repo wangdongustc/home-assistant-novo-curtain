@@ -1,4 +1,4 @@
-"""Custom types for integration_blueprint."""
+"""Custom types for novo_curtain."""
 
 from __future__ import annotations
 
@@ -9,17 +9,17 @@ if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.loader import Integration
 
-    from .api import IntegrationBlueprintApiClient
+    from .api import NovoCurtainApiClient
     from .coordinator import BlueprintDataUpdateCoordinator
 
 
-type IntegrationBlueprintConfigEntry = ConfigEntry[IntegrationBlueprintData]
+type NovoCurtainConfigEntry = ConfigEntry[NovoCurtainData]
 
 
 @dataclass
-class IntegrationBlueprintData:
+class NovoCurtainData:
     """Data for the Blueprint integration."""
 
-    client: IntegrationBlueprintApiClient
+    client: NovoCurtainApiClient
     coordinator: BlueprintDataUpdateCoordinator
     integration: Integration

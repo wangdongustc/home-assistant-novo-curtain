@@ -1,0 +1,12 @@
+{
+  "domain": "novo_curtain",
+  "name": "Integration blueprint",
+  "codeowners": [
+    "@ludeeus"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/wangdongustc/home-assistant-novo-curtain",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/wangdongustc/home-assistant-novo-curtain/issues",
+  "version": "0.1.0"
+}
