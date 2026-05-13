@@ -102,4 +102,6 @@ async def test_stop_control_command() -> None:
 
     from custom_components.novo_curtain.api import NovoSerialCommand
 
-    client.async_transaction.assert_called_once_with(command=NovoSerialCommand.STOP_CONTROL)
+    client.async_transaction.assert_called_once_with(
+        command=NovoSerialCommand.STOP_CONTROL
+    )
