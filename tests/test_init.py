@@ -49,8 +49,26 @@ async def test_query_status_reconfigures_direction() -> None:
     client.async_transaction = AsyncMock(side_effect=[first_response, second_response])
     client.async_set_direction = AsyncMock()
 
-    position, direction = await client.async_query_status()
+    position, direction, motor_state = await client.async_query_status()
 
     client.async_set_direction.assert_called_once_with(1)
     assert position == 100
     assert direction == 1
+    assert motor_state == 0
+
+
+@pytest.mark.asyncio
+async def test_open_close_control_commands() -> None:
+    """Test open and close control command sending."""
+    mock_serial = MagicMock()
+    client = NovoSerialClient(mock_serial, address=1, channel=1)
+
+    client.async_transaction = AsyncMock()
+
+    await client.async_open_control()
+    await client.async_close_control()
+
+    from custom_components.novo_curtain.api import NovoSerialCommand
+
+    client.async_transaction.assert_any_call(command=NovoSerialCommand.OPEN_CONTROL)
+    client.async_transaction.assert_any_call(command=NovoSerialCommand.CLOSE_CONTROL)

@@ -35,6 +35,8 @@ class NovoSerialCommand(IntEnum):
     SET_POSITION = 0x67
     QUERY_STATUS = 0x98
     SET_DIRECTION = 0xCD
+    OPEN_CONTROL = 0x0D
+    CLOSE_CONTROL = 0x0E
 
 
 class NovoSerialClient:
@@ -157,21 +159,30 @@ class NovoSerialClient:
             command=NovoSerialCommand.SET_DIRECTION, params=[direction]
         )
 
+    async def async_open_control(self) -> None:
+        """Send open/expand control command."""
+        await self.async_transaction(command=NovoSerialCommand.OPEN_CONTROL)
+
+    async def async_close_control(self) -> None:
+        """Send close/shrink control command."""
+        await self.async_transaction(command=NovoSerialCommand.CLOSE_CONTROL)
+
     async def async_query_status(
         self,
         *,
         ensure_direction: bool = True,
-    ) -> tuple[int, int]:
+    ) -> tuple[int, int, int]:
         """
-        Query the curtain position and direction.
+        Query the curtain position, direction and motor state.
 
         Returns:
-            tuple: (position, direction) where direction is 0 for default, 1 for reverse
+            tuple: (position, direction, motor_state) where direction is 0 for default, 1 for reverse
 
         """
         params = await self.async_transaction(command=NovoSerialCommand.QUERY_STATUS)
         position = params[0]
         direction = params[1] if len(params) > 1 else 0
+        motor_state = params[2] if len(params) > 2 else 0
 
         if (
             ensure_direction
@@ -181,7 +192,7 @@ class NovoSerialClient:
             await self.async_set_direction(self._direction)
             return await self.async_query_status(ensure_direction=False)
 
-        return position, direction
+        return position, direction, motor_state
 
     async def async_query_position(self) -> int:
         """Query the curtain position (legacy method)."""

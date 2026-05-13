@@ -18,12 +18,12 @@ class NovoCurtainDataUpdateCoordinator(DataUpdateCoordinator):
 
     config_entry: NovoCurtainConfigEntry
 
-    async def _async_update_data(self) -> tuple[int, int]:
+    async def _async_update_data(self) -> tuple[int, int, int]:
         """
         Update data via library.
 
         Returns:
-            tuple: (position, direction) where direction is 0 for default, 1 for reverse
+            tuple: (position, direction, motor_state) where direction is 0 for default, 1 for reverse
 
         """
         try:
