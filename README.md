@@ -7,7 +7,8 @@ A Home Assistant integration for controlling Novo N99 RS-485 motor curtains.
 ## Features
 
 - Control curtain position (open/close/set position)
-- Real-time position feedback
+- Open/close control switch for direct motor open/close commands
+- Real-time position and motor state feedback
 - RS-485 serial communication
 - Support for multiple curtains on the same bus
 
@@ -44,6 +45,7 @@ After configuration, the curtain will appear as a cover entity in Home Assistant
 - Open/close the curtain
 - Set specific positions (0-100%)
 - Monitor current position
+- Use the open/close control switch for direct on/off motor control and current motor state feedback
 
 ## Hardware Requirements
 
