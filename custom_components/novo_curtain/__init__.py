@@ -33,7 +33,8 @@ if TYPE_CHECKING:
 
 PLATFORMS: list[Platform] = [
     Platform.COVER,
-    Platform.SWITCH,
+    Platform.BUTTON,
+    Platform.SENSOR,
 ]
 
 

@@ -37,6 +37,7 @@ class NovoSerialCommand(IntEnum):
     SET_DIRECTION = 0xCD
     OPEN_CONTROL = 0x0D
     CLOSE_CONTROL = 0x0E
+    STOP_CONTROL = 0x0F
 
 
 class NovoSerialClient:
@@ -166,6 +167,10 @@ class NovoSerialClient:
     async def async_close_control(self) -> None:
         """Send close/shrink control command."""
         await self.async_transaction(command=NovoSerialCommand.CLOSE_CONTROL)
+
+    async def async_stop_control(self) -> None:
+        """Send motor stop command."""
+        await self.async_transaction(command=NovoSerialCommand.STOP_CONTROL)
 
     async def async_query_status(
         self,

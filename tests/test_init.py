@@ -72,3 +72,17 @@ async def test_open_close_control_commands() -> None:
 
     client.async_transaction.assert_any_call(command=NovoSerialCommand.OPEN_CONTROL)
     client.async_transaction.assert_any_call(command=NovoSerialCommand.CLOSE_CONTROL)
+
+
+@pytest.mark.asyncio
+async def test_stop_control_command() -> None:
+    """Test stop control command sending."""
+    mock_serial = MagicMock()
+    client = NovoSerialClient(mock_serial, address=1, channel=1)
+
+    client.async_transaction = AsyncMock()
+    await client.async_stop_control()
+
+    from custom_components.novo_curtain.api import NovoSerialCommand
+
+    client.async_transaction.assert_called_once_with(command=NovoSerialCommand.STOP_CONTROL)
