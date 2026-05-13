@@ -34,6 +34,7 @@ class NovoSerialCommand(IntEnum):
 
     SET_POSITION = 0x67
     QUERY_STATUS = 0x98
+    SET_DIRECTION = 0xCD
 
 
 class NovoSerialClient:
@@ -142,7 +143,32 @@ class NovoSerialClient:
             command=NovoSerialCommand.SET_POSITION, params=[position]
         )
 
-    async def async_query_position(self) -> int:
-        """Query the curtain position."""
+    async def async_set_direction(self, direction: int) -> None:
+        """
+        Set the curtain direction.
+
+        Args:
+            direction: 0 for default direction, 1 for reverse direction
+
+        """
+        await self.async_transaction(
+            command=NovoSerialCommand.SET_DIRECTION, params=[direction]
+        )
+
+    async def async_query_status(self) -> tuple[int, int]:
+        """
+        Query the curtain position and direction.
+
+        Returns:
+            tuple: (position, direction) where direction is 0 for default, 1 for reverse
+
+        """
         params = await self.async_transaction(command=NovoSerialCommand.QUERY_STATUS)
-        return params[0]
+        position = params[0]
+        direction = params[1] if len(params) > 1 else 0
+        return position, direction
+
+    async def async_query_position(self) -> int:
+        """Query the curtain position (legacy method)."""
+        position, _ = await self.async_query_status()
+        return position

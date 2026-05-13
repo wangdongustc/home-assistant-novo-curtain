@@ -6,7 +6,8 @@
                 "data": {
                     "serial_path": "Serial Path",
                     "address": "Device Address (hex)",
-                    "channel": "Channel"
+                    "channel": "Channel",
+                    "direction": "Direction"
                 }
             }
         },

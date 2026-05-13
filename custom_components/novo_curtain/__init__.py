@@ -15,7 +15,14 @@ from homeassistant.const import Platform
 from homeassistant.loader import async_get_loaded_integration
 
 from .api import NovoSerialClient
-from .const import CONF_ADDRESS, CONF_CHANNEL, CONF_SERIAL_PATH, DOMAIN, LOGGER
+from .const import (
+    CONF_ADDRESS,
+    CONF_CHANNEL,
+    CONF_DIRECTION,
+    CONF_SERIAL_PATH,
+    DOMAIN,
+    LOGGER,
+)
 from .coordinator import NovoCurtainDataUpdateCoordinator
 from .data import NovoCurtainData
 
@@ -52,6 +59,10 @@ async def async_setup_entry(
         integration=async_get_loaded_integration(hass, entry.domain),
         coordinator=coordinator,
     )
+
+    # Set initial direction
+    direction = entry.data.get(CONF_DIRECTION, 0)
+    await entry.runtime_data.client.async_set_direction(direction)
 
     # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
     await coordinator.async_config_entry_first_refresh()

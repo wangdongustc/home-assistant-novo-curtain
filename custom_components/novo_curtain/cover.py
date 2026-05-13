@@ -62,12 +62,16 @@ class NovoCurtainCover(NovoCurtainEntity, CoverEntity):
     @property
     def current_cover_position(self) -> int | None:
         """Return the current position of the cover."""
-        return self.coordinator.data
+        if self.coordinator.data:
+            return self.coordinator.data[0]
+        return None
 
     @property
     def is_closed(self) -> bool:
         """Return true if the cover is closed."""
-        return self.coordinator.data == 0
+        if self.coordinator.data:
+            return self.coordinator.data[0] == 0
+        return False
 
     async def async_open_cover(self, **kwargs: Any) -> None:  # noqa: ARG002
         """Open the cover."""

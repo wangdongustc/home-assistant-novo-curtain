@@ -22,7 +22,12 @@ async def test_novo_serial_client() -> None:
     assert command[0] == 0x55  # PROTOCOL_HEADER
     assert command[4] == 0x67  # SET_POSITION command
     assert command[5] == 100  # position parameter
-
+    # Test build_command for SET_DIRECTION
+    command = client.build_command(0xCD, [1])
+    assert len(command) == 9  # PROTOCOL_LENGTH
+    assert command[0] == 0x55  # PROTOCOL_HEADER
+    assert command[4] == 0xCD  # SET_DIRECTION command
+    assert command[5] == 1     # direction parameter
     # Test parse_response
     response = bytes(
         [0x55, 0x00, 0x01, 0x01, 0x67, 0x64, 0x00, 0x00, 0x22]

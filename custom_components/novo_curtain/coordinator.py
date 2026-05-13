@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -18,11 +18,15 @@ class NovoCurtainDataUpdateCoordinator(DataUpdateCoordinator):
 
     config_entry: NovoCurtainConfigEntry
 
-    async def _async_update_data(self) -> Any:
-        """Update data via library."""
-        # pass
+    async def _async_update_data(self) -> tuple[int, int]:
+        """
+        Update data via library.
 
+        Returns:
+            tuple: (position, direction) where direction is 0 for default, 1 for reverse
+
+        """
         try:
-            return await self.config_entry.runtime_data.client.async_query_position()
+            return await self.config_entry.runtime_data.client.async_query_status()
         except NovoSerialClientCommunicationError as exception:
             raise UpdateFailed(exception) from exception
