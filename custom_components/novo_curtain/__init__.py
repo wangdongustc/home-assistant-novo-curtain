@@ -55,6 +55,7 @@ async def async_setup_entry(
             ),
             address=int(entry.data[CONF_ADDRESS], base=0),
             channel=int(entry.data[CONF_CHANNEL], base=0),
+            direction=int(entry.data.get(CONF_DIRECTION, 0)),
         ),
         integration=async_get_loaded_integration(hass, entry.domain),
         coordinator=coordinator,

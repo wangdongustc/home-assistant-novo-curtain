@@ -1,6 +1,6 @@
 """Tests for Novo Curtain integration."""
 
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -27,7 +27,7 @@ async def test_novo_serial_client() -> None:
     assert len(command) == 9  # PROTOCOL_LENGTH
     assert command[0] == 0x55  # PROTOCOL_HEADER
     assert command[4] == 0xCD  # SET_DIRECTION command
-    assert command[5] == 1     # direction parameter
+    assert command[5] == 1  # direction parameter
     # Test parse_response
     response = bytes(
         [0x55, 0x00, 0x01, 0x01, 0x67, 0x64, 0x00, 0x00, 0x22]
@@ -35,3 +35,22 @@ async def test_novo_serial_client() -> None:
     parsed = client.parse_response(response)
     assert parsed["command"] == 0x67
     assert parsed["params"] == [0x64, 0x00, 0x00]
+
+
+@pytest.mark.asyncio
+async def test_query_status_reconfigures_direction() -> None:
+    """Ensure async_query_status reconfigures direction when the device disagrees."""
+    mock_serial = MagicMock()
+    client = NovoSerialClient(mock_serial, address=1, channel=1, direction=1)
+
+    first_response = [100, 0, 0]
+    second_response = [100, 1, 0]
+
+    client.async_transaction = AsyncMock(side_effect=[first_response, second_response])
+    client.async_set_direction = AsyncMock()
+
+    position, direction = await client.async_query_status()
+
+    client.async_set_direction.assert_called_once_with(1)
+    assert position == 100
+    assert direction == 1
