@@ -45,7 +45,7 @@ After configuration, the curtain will appear as a cover entity in Home Assistant
 - Open/close the curtain
 - Set specific positions (0-100%)
 - Monitor current position
-- Use action buttons for direct open, close, jog, and stop control
+- Use action buttons for direct open, close, inching left/right, and stop control
 - Monitor real-time motor state via a dedicated sensor
 
 ## Hardware Requirements

@@ -75,6 +75,23 @@ async def test_open_close_control_commands() -> None:
 
 
 @pytest.mark.asyncio
+async def test_inching_control_commands() -> None:
+    """Test inching left/right control command sending."""
+    mock_serial = MagicMock()
+    client = NovoSerialClient(mock_serial, address=1, channel=1)
+
+    client.async_transaction = AsyncMock()
+
+    await client.async_inching_left()
+    await client.async_inching_right()
+
+    from custom_components.novo_curtain.api import NovoSerialCommand
+
+    client.async_transaction.assert_any_call(command=NovoSerialCommand.INCHING_LEFT)
+    client.async_transaction.assert_any_call(command=NovoSerialCommand.INCHING_RIGHT)
+
+
+@pytest.mark.asyncio
 async def test_stop_control_command() -> None:
     """Test stop control command sending."""
     mock_serial = MagicMock()

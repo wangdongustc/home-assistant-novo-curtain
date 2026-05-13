@@ -22,7 +22,8 @@ if TYPE_CHECKING:
 ENTITY_DESCRIPTIONS = (
     ButtonEntityDescription(key="open", name="Open Curtain"),
     ButtonEntityDescription(key="close", name="Close Curtain"),
-    ButtonEntityDescription(key="jog", name="Jog Curtain"),
+    ButtonEntityDescription(key="inching_left", name="Inching Left"),
+    ButtonEntityDescription(key="inching_right", name="Inching Right"),
     ButtonEntityDescription(key="stop", name="Stop Curtain"),
 )
 
@@ -62,9 +63,9 @@ class NovoCurtainButton(NovoCurtainEntity, ButtonEntity):
             await client.async_open_control()
         elif self.entity_description.key == "close":
             await client.async_close_control()
-        elif self.entity_description.key == "jog":
-            # The protocol defines dedicated open/close control commands.
-            # If a distinct jog command exists, replace this call with it.
-            await client.async_open_control()
+        elif self.entity_description.key == "inching_left":
+            await client.async_inching_left()
+        elif self.entity_description.key == "inching_right":
+            await client.async_inching_right()
         elif self.entity_description.key == "stop":
             await client.async_stop_control()
