@@ -1,9 +1,8 @@
-"""Adds config flow for Blueprint."""
+"""Config flow for Novo Curtain."""
 
 from __future__ import annotations
 
 import serial
-
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.helpers import selector
@@ -13,7 +12,14 @@ from .api import (
     NovoSerialClient,
     NovoSerialClientError,
 )
-from .const import DOMAIN, LOGGER, CONF_SERIAL_PATH, CONF_ADDRESS, CONF_CHANNEL
+from .const import (
+    CONF_ADDRESS,
+    CONF_CHANNEL,
+    CONF_DIRECTION,
+    CONF_SERIAL_PATH,
+    DOMAIN,
+    LOGGER,
+)
 
 
 class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -33,6 +39,7 @@ class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     serial_path=user_input[CONF_SERIAL_PATH],
                     address=user_input[CONF_ADDRESS],
                     channel=user_input[CONF_CHANNEL],
+                    direction=user_input.get(CONF_DIRECTION, 0),
                 )
             except NovoSerialClientError as exception:
                 LOGGER.exception(exception)
@@ -72,13 +79,22 @@ class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                             type=selector.TextSelectorType.NUMBER,
                         ),
                     ),
+                    vol.Optional(CONF_DIRECTION, default=0): selector.SelectSelector(
+                        selector.SelectSelectorConfig(
+                            options=[
+                                {"value": 0, "label": "Default Direction"},
+                                {"value": 1, "label": "Reverse Direction"},
+                            ],
+                            mode=selector.SelectSelectorMode.DROPDOWN,
+                        ),
+                    ),
                 },
             ),
             errors=_errors,
         )
 
     async def _test_credentials(
-        self, serial_path: str, address: str, channel: str
+        self, serial_path: str, address: str, channel: str, direction: int = 0
     ) -> None:
         """Validate credentials."""
         serial_port = serial.Serial(serial_path, baudrate=9600, timeout=1)
@@ -87,4 +103,7 @@ class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         client = NovoSerialClient(
             serial=serial_port, address=address_int, channel=channel_int
         )
+        # Set direction first
+        await client.async_set_direction(direction)
+        # Then query status
         await client.async_query_position()

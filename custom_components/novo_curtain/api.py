@@ -1,14 +1,14 @@
-"""Noto Motor 485 Serial Port API Client."""
+"""Novo Motor 485 Serial Port API Client."""
 
 from __future__ import annotations
 
 import asyncio
-from enum import IntEnum
 import logging
+from enum import IntEnum
 from typing import Any
 
 import async_timeout
-import serial
+import serial  # noqa: TC002
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -34,6 +34,7 @@ class NovoSerialCommand(IntEnum):
 
     SET_POSITION = 0x67
     QUERY_STATUS = 0x98
+    SET_DIRECTION = 0xCD
 
 
 class NovoSerialClient:
@@ -48,6 +49,7 @@ class NovoSerialClient:
         serial: serial.Serial,
         address: int,
         channel: int,
+        direction: int | None = None,
     ) -> None:
         """Initialize the API client."""
         self._serial = serial
@@ -55,6 +57,7 @@ class NovoSerialClient:
         self._addr_hi = (address >> 8) & 0xFF
         self._addr_lo = address & 0xFF
         self._channel = channel
+        self._direction = direction
 
     def calc_checksum(self, data: list[int]) -> int:
         """Calculate the checksum for a command."""
@@ -142,7 +145,45 @@ class NovoSerialClient:
             command=NovoSerialCommand.SET_POSITION, params=[position]
         )
 
-    async def async_query_position(self) -> int:
-        """Query the curtain position."""
+    async def async_set_direction(self, direction: int) -> None:
+        """
+        Set the curtain direction.
+
+        Args:
+            direction: 0 for default direction, 1 for reverse direction
+
+        """
+        await self.async_transaction(
+            command=NovoSerialCommand.SET_DIRECTION, params=[direction]
+        )
+
+    async def async_query_status(
+        self,
+        *,
+        ensure_direction: bool = True,
+    ) -> tuple[int, int]:
+        """
+        Query the curtain position and direction.
+
+        Returns:
+            tuple: (position, direction) where direction is 0 for default, 1 for reverse
+
+        """
         params = await self.async_transaction(command=NovoSerialCommand.QUERY_STATUS)
-        return params[0]
+        position = params[0]
+        direction = params[1] if len(params) > 1 else 0
+
+        if (
+            ensure_direction
+            and self._direction is not None
+            and direction != self._direction
+        ):
+            await self.async_set_direction(self._direction)
+            return await self.async_query_status(ensure_direction=False)
+
+        return position, direction
+
+    async def async_query_position(self) -> int:
+        """Query the curtain position (legacy method)."""
+        position, _ = await self.async_query_status()
+        return position
