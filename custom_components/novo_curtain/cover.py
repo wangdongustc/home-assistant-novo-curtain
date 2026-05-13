@@ -1,4 +1,4 @@
-"""Switch platform for novo_curtain."""
+"""Cover platform for novo_curtain."""
 
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ class NovoCurtainCover(NovoCurtainEntity, CoverEntity):
     def __init__(
         self,
         coordinator: NovoCurtainDataUpdateCoordinator,
-        entity_description: SwitchEntityDescription,
+        entity_description: CoverEntityDescription,
     ) -> None:
         """Initialize the cover class."""
         super().__init__(coordinator)
@@ -69,11 +69,11 @@ class NovoCurtainCover(NovoCurtainEntity, CoverEntity):
         """Return true if the cover is closed."""
         return self.coordinator.data == 0
 
-    async def async_open_cover(self, **kwargs: Any) -> None:
+    async def async_open_cover(self, **kwargs: Any) -> None:  # noqa: ARG002
         """Open the cover."""
         await self.coordinator.config_entry.runtime_data.client.async_set_position(100)
 
-    async def async_close_cover(self, **kwargs: Any) -> None:
+    async def async_close_cover(self, **kwargs: Any) -> None:  # noqa: ARG002
         """Close the cover."""
         await self.coordinator.config_entry.runtime_data.client.async_set_position(0)
 

@@ -7,17 +7,15 @@ https://github.com/wangdongustc/home-assistant-novo-curtain
 
 from __future__ import annotations
 
-import serial
-
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
+import serial
 from homeassistant.const import Platform
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.loader import async_get_loaded_integration
 
 from .api import NovoSerialClient
-from .const import DOMAIN, LOGGER, CONF_SERIAL_PATH, CONF_ADDRESS, CONF_CHANNEL
+from .const import CONF_ADDRESS, CONF_CHANNEL, CONF_SERIAL_PATH, DOMAIN, LOGGER
 from .coordinator import NovoCurtainDataUpdateCoordinator
 from .data import NovoCurtainData
 

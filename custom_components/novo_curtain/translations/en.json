@@ -2,20 +2,19 @@
     "config": {
         "step": {
             "user": {
-                "description": "If you need help with the configuration have a look here.",
+                "description": "Configure your Novo N99 curtain motor.",
                 "data": {
-                    "username": "Username",
-                    "password": "Password"
+                    "serial_path": "Serial Path",
+                    "address": "Device Address (hex)",
+                    "channel": "Channel"
                 }
             }
         },
         "error": {
-            "auth": "Username/Password is wrong.",
-            "connection": "Unable to connect to the server.",
-            "unknown": "Unknown error occurred."
+            "unknown": "Failed to connect to the device. Check your serial path, address, and channel."
         },
         "abort": {
-            "already_configured": "This entry is already configured."
+            "already_configured": "This device is already configured."
         }
     }
 }

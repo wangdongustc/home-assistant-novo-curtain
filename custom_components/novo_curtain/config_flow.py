@@ -1,9 +1,8 @@
-"""Adds config flow for Blueprint."""
+"""Config flow for Novo Curtain."""
 
 from __future__ import annotations
 
 import serial
-
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.helpers import selector
@@ -13,7 +12,7 @@ from .api import (
     NovoSerialClient,
     NovoSerialClientError,
 )
-from .const import DOMAIN, LOGGER, CONF_SERIAL_PATH, CONF_ADDRESS, CONF_CHANNEL
+from .const import CONF_ADDRESS, CONF_CHANNEL, CONF_SERIAL_PATH, DOMAIN, LOGGER
 
 
 class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):

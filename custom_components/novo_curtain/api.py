@@ -1,14 +1,14 @@
-"""Noto Motor 485 Serial Port API Client."""
+"""Novo Motor 485 Serial Port API Client."""
 
 from __future__ import annotations
 
 import asyncio
-from enum import IntEnum
 import logging
+from enum import IntEnum
 from typing import Any
 
 import async_timeout
-import serial
+import serial  # noqa: TC002
 
 _LOGGER = logging.getLogger(__name__)
 
