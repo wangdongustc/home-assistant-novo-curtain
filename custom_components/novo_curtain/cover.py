@@ -75,11 +75,11 @@ class NovoCurtainCover(NovoCurtainEntity, CoverEntity):
 
     async def async_open_cover(self, **kwargs: Any) -> None:  # noqa: ARG002
         """Open the cover."""
-        await self.coordinator.config_entry.runtime_data.client.async_set_position(100)
+        await self.coordinator.config_entry.runtime_data.client.async_open_control()
 
     async def async_close_cover(self, **kwargs: Any) -> None:  # noqa: ARG002
         """Close the cover."""
-        await self.coordinator.config_entry.runtime_data.client.async_set_position(0)
+        await self.coordinator.config_entry.runtime_data.client.async_close_control()
 
     async def async_set_cover_position(self, **kwargs: Any) -> None:
         """Set the cover to a specific position."""
