@@ -23,7 +23,8 @@ class NovoCurtainDataUpdateCoordinator(DataUpdateCoordinator):
         Update data via library.
 
         Returns:
-            tuple: (position, direction, motor_state) where direction is 0 for default, 1 for reverse
+            tuple: (position, direction, motor_state) where direction is 0 for default,
+            1 for reverse
 
         """
         try:

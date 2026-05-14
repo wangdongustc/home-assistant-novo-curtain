@@ -29,7 +29,7 @@ ENTITY_DESCRIPTIONS = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
+    _hass: HomeAssistant,
     entry: NovoCurtainConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:

@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from custom_components.novo_curtain.api import NovoSerialClient
+from custom_components.novo_curtain.api import NovoSerialClient, NovoSerialCommand
 
 
 @pytest.mark.asyncio
@@ -68,8 +68,6 @@ async def test_open_close_control_commands() -> None:
     await client.async_open_control()
     await client.async_close_control()
 
-    from custom_components.novo_curtain.api import NovoSerialCommand
-
     client.async_transaction.assert_any_call(command=NovoSerialCommand.OPEN_CONTROL)
     client.async_transaction.assert_any_call(command=NovoSerialCommand.CLOSE_CONTROL)
 
@@ -85,8 +83,6 @@ async def test_inching_control_commands() -> None:
     await client.async_inching_left()
     await client.async_inching_right()
 
-    from custom_components.novo_curtain.api import NovoSerialCommand
-
     client.async_transaction.assert_any_call(command=NovoSerialCommand.INCHING_LEFT)
     client.async_transaction.assert_any_call(command=NovoSerialCommand.INCHING_RIGHT)
 
@@ -99,8 +95,6 @@ async def test_stop_control_command() -> None:
 
     client.async_transaction = AsyncMock()
     await client.async_stop_control()
-
-    from custom_components.novo_curtain.api import NovoSerialCommand
 
     client.async_transaction.assert_called_once_with(
         command=NovoSerialCommand.STOP_CONTROL

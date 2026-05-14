@@ -191,13 +191,14 @@ class NovoSerialClient:
         Query the curtain position, direction and motor state.
 
         Returns:
-            tuple: (position, direction, motor_state) where direction is 0 for default, 1 for reverse
+            tuple: (position, direction, motor_state) where direction is 0 for default,
+            1 for reverse
 
         """
         params = await self.async_transaction(command=NovoSerialCommand.QUERY_STATUS)
         position = params[0]
         direction = params[1] if len(params) > 1 else 0
-        motor_state = params[2] if len(params) > 2 else 0
+        motor_state = params[2] if len(params) > 2 else 0  # noqa: PLR2004
 
         if (
             ensure_direction
