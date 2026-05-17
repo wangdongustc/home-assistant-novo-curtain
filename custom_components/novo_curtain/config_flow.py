@@ -82,8 +82,8 @@ class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(CONF_DIRECTION, default=0): selector.SelectSelector(
                         selector.SelectSelectorConfig(
                             options=[
-                                {"value": 0, "label": "Default Direction"},
-                                {"value": 1, "label": "Reverse Direction"},
+                                {"value": "0", "label": "Default Direction"},
+                                {"value": "1", "label": "Reverse Direction"},
                             ],
                             mode=selector.SelectSelectorMode.DROPDOWN,
                         ),

@@ -212,5 +212,5 @@ class NovoSerialClient:
 
     async def async_query_position(self) -> int:
         """Query the curtain position (legacy method)."""
-        position, _ = await self.async_query_status()
+        position, _, _ = await self.async_query_status()
         return position
