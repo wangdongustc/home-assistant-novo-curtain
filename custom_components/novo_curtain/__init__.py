@@ -64,7 +64,7 @@ async def async_setup_entry(
     )
 
     # Set initial direction
-    direction = entry.data.get(CONF_DIRECTION, 0)
+    direction = int(entry.data.get(CONF_DIRECTION, 0))
     await entry.runtime_data.client.async_set_direction(direction)
 
     # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities

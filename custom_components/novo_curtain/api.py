@@ -151,13 +151,7 @@ class NovoSerialClient:
         )
 
     async def async_set_direction(self, direction: int) -> None:
-        """
-        Set the curtain direction.
-
-        Args:
-            direction: 0 for default direction, 1 for reverse direction
-
-        """
+        """Set the curtain direction. 0 for default, 1 for reverse."""
         await self.async_transaction(
             command=NovoSerialCommand.SET_DIRECTION, params=[direction]
         )

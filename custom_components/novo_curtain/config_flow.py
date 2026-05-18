@@ -100,10 +100,14 @@ class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         serial_port = serial.Serial(serial_path, baudrate=9600, timeout=1)
         address_int = int(address, base=0)
         channel_int = int(channel, base=0)
+        direction_int = int(direction)
         client = NovoSerialClient(
-            serial=serial_port, address=address_int, channel=channel_int
+            serial=serial_port,
+            address=address_int,
+            channel=channel_int,
+            direction=direction_int,
         )
         # Set direction first
-        await client.async_set_direction(direction)
+        await client.async_set_direction(direction_int)
         # Then query status
         await client.async_query_position()
