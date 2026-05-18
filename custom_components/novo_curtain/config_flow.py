@@ -107,7 +107,5 @@ class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             channel=channel_int,
             direction=direction_int,
         )
-        # Set direction first
-        await client.async_set_direction(direction_int)
         # Then query status
         await client.async_query_position()
