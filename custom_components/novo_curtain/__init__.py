@@ -7,6 +7,7 @@ https://github.com/wangdongustc/home-assistant-novo-curtain
 
 from __future__ import annotations
 
+import asyncio
 from datetime import timedelta
 from typing import TYPE_CHECKING
 

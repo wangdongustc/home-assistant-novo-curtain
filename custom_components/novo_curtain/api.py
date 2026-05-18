@@ -128,7 +128,7 @@ class NovoSerialClient:
                 None, self._serial.write, tx_bytes
             )
             # Wait for response
-            async with async_timeout.timeout(10):
+            async with async_timeout.timeout(1):
                 data = await asyncio.get_event_loop().run_in_executor(
                     None, self._serial.read, self.PROTOCOL_LENGTH
                 )
@@ -140,7 +140,11 @@ class NovoSerialClient:
                     f"Unexpected response command: {parsed['command']:02X} "
                     f"(expected {command:02X})"
                 )
+                await asyncio.sleep(0.5)
                 raise NovoSerialClientCommunicationError(error_msg)
+
+            # Add a short delay to avoid overwhelming the device with back-to-back commands
+            await asyncio.sleep(0.5)
 
             return parsed["params"]
 
