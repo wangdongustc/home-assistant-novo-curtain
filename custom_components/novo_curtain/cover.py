@@ -21,7 +21,11 @@ if TYPE_CHECKING:
     from .data import NovoCurtainConfigEntry
 
 ENTITY_DESCRIPTIONS = (
-    CoverEntityDescription(key="Novo Curtain", device_class=CoverDeviceClass.CURTAIN),
+    CoverEntityDescription(
+        key="curtain",
+        name="Novo Curtain",
+        device_class=CoverDeviceClass.CURTAIN,
+    ),
 )
 
 
@@ -58,6 +62,9 @@ class NovoCurtainCover(NovoCurtainEntity, CoverEntity):
         """Initialize the cover class."""
         super().__init__(coordinator)
         self.entity_description = entity_description
+        self._attr_unique_id = (
+            f"{coordinator.config_entry.entry_id}_{entity_description.key}"
+        )
 
     @property
     def current_cover_position(self) -> int | None:

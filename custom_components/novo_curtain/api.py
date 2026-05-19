@@ -49,6 +49,8 @@ class NovoSerialClient:
     PROTOCOL_HEADER = 0x55
     PARAMS_LENGTH = 3
 
+    TRANSACTION_COOLDOWN = 0.25  # seconds
+
     def __init__(
         self,
         serial: serial.Serial,
@@ -128,11 +130,15 @@ class NovoSerialClient:
                 None, self._serial.write, tx_bytes
             )
             # Wait for response
-            async with async_timeout.timeout(10):
+            async with async_timeout.timeout(1):
                 data = await asyncio.get_event_loop().run_in_executor(
                     None, self._serial.read, self.PROTOCOL_LENGTH
                 )
             _LOGGER.info("Received response: %s", data.hex())
+
+            # Sleep briefly to avoid overwhelming the device.
+            await asyncio.sleep(self.TRANSACTION_COOLDOWN)
+
             # Verify response
             parsed = self.parse_response(data)
             if parsed["command"] != command:
@@ -151,13 +157,7 @@ class NovoSerialClient:
         )
 
     async def async_set_direction(self, direction: int) -> None:
-        """
-        Set the curtain direction.
-
-        Args:
-            direction: 0 for default direction, 1 for reverse direction
-
-        """
+        """Set the curtain direction. 0 for default, 1 for reverse."""
         await self.async_transaction(
             command=NovoSerialCommand.SET_DIRECTION, params=[direction]
         )
@@ -212,5 +212,5 @@ class NovoSerialClient:
 
     async def async_query_position(self) -> int:
         """Query the curtain position (legacy method)."""
-        position, _ = await self.async_query_status()
+        position, _, _ = await self.async_query_status()
         return position

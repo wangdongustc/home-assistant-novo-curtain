@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
-class NovoCurtainDataUpdateCoordinator(DataUpdateCoordinator):
+class NovoCurtainDataUpdateCoordinator(DataUpdateCoordinator[tuple[int, int, int]]):
     """Class to manage fetching data from the API."""
 
     config_entry: NovoCurtainConfigEntry

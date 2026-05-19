@@ -82,8 +82,8 @@ class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(CONF_DIRECTION, default=0): selector.SelectSelector(
                         selector.SelectSelectorConfig(
                             options=[
-                                {"value": 0, "label": "Default Direction"},
-                                {"value": 1, "label": "Reverse Direction"},
+                                {"value": "0", "label": "Default Direction"},
+                                {"value": "1", "label": "Reverse Direction"},
                             ],
                             mode=selector.SelectSelectorMode.DROPDOWN,
                         ),
@@ -100,10 +100,12 @@ class NovoCurtainFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         serial_port = serial.Serial(serial_path, baudrate=9600, timeout=1)
         address_int = int(address, base=0)
         channel_int = int(channel, base=0)
+        direction_int = int(direction)
         client = NovoSerialClient(
-            serial=serial_port, address=address_int, channel=channel_int
+            serial=serial_port,
+            address=address_int,
+            channel=channel_int,
+            direction=direction_int,
         )
-        # Set direction first
-        await client.async_set_direction(direction)
         # Then query status
         await client.async_query_position()
