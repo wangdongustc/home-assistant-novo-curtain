@@ -49,7 +49,7 @@ class NovoSerialClient:
     PROTOCOL_HEADER = 0x55
     PARAMS_LENGTH = 3
 
-    TRANSACTION_COOLDOWN = 0.2  # seconds
+    TRANSACTION_COOLDOWN = 1  # seconds
 
     def __init__(
         self,
