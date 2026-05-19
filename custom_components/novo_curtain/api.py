@@ -6,7 +6,6 @@ import asyncio
 import logging
 from enum import IntEnum
 from typing import Any
-from unittest.mock import DEFAULT
 
 import async_timeout
 import serial  # noqa: TC002
@@ -86,7 +85,7 @@ class NovoSerialClient:
             *params,
         ]
         checksum = self.calc_checksum(command_bytes)
-        _LOGGER.error("Checksum: %s, all: %s", checksum, command_bytes)
+        _LOGGER.info("Checksum: %s, all: %s", checksum, command_bytes)
         return bytes([*command_bytes, checksum])
 
     def parse_response(self, data: bytes) -> dict[str, Any]:
