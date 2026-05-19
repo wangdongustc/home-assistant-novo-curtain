@@ -49,6 +49,8 @@ class NovoSerialClient:
     PROTOCOL_HEADER = 0x55
     PARAMS_LENGTH = 3
 
+    TRANSACTION_COOLDOWN = 0.2  # seconds
+
     def __init__(
         self,
         serial: serial.Serial,
@@ -133,6 +135,10 @@ class NovoSerialClient:
                     None, self._serial.read, self.PROTOCOL_LENGTH
                 )
             _LOGGER.info("Received response: %s", data.hex())
+
+            # Sleep briefly to avoid overwhelming the device.
+            await asyncio.sleep(self.TRANSACTION_COOLDOWN)
+
             # Verify response
             parsed = self.parse_response(data)
             if parsed["command"] != command:
@@ -140,11 +146,7 @@ class NovoSerialClient:
                     f"Unexpected response command: {parsed['command']:02X} "
                     f"(expected {command:02X})"
                 )
-                await asyncio.sleep(0.5)
                 raise NovoSerialClientCommunicationError(error_msg)
-
-            # Add a short delay to avoid overwhelming the device with back-to-back commands
-            await asyncio.sleep(0.5)
 
             return parsed["params"]
 
