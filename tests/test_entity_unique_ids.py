@@ -7,13 +7,19 @@ from custom_components.novo_curtain.sensor import NovoCurtainMotorStateSensor
 
 
 class DummyConfigEntry:
+    """Simple dummy config entry for tests."""
+
     def __init__(self, entry_id: str) -> None:
+        """Initialize a dummy config entry with an entry id."""
         self.entry_id = entry_id
         self.domain = "novo_curtain"
 
 
 class DummyCoordinator:
+    """Simple dummy coordinator holding a config entry for tests."""
+
     def __init__(self, entry_id: str) -> None:
+        """Initialize the dummy coordinator with a config entry."""
         self.config_entry = DummyConfigEntry(entry_id)
 
 
