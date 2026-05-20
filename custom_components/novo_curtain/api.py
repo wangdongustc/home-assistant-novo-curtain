@@ -85,7 +85,7 @@ class NovoSerialClient:
             *params,
         ]
         checksum = self.calc_checksum(command_bytes)
-        _LOGGER.error("Checksum: %s, all: %s", checksum, command_bytes)
+        _LOGGER.info("Checksum: %s, all: %s", checksum, command_bytes)
         return bytes([*command_bytes, checksum])
 
     def parse_response(self, data: bytes) -> dict[str, Any]:
@@ -116,7 +116,7 @@ class NovoSerialClient:
             "params": list(data[5:-1]),
         }
 
-    async def async_transaction(
+    async def async_transaction_once(
         self, command: NovoSerialCommand, params: list[int] | None = None
     ) -> list[int]:
         """Send a command and wait for the response."""
@@ -149,6 +149,28 @@ class NovoSerialClient:
                 raise NovoSerialClientCommunicationError(error_msg)
 
             return parsed["params"]
+
+    async def async_transaction(
+        self,
+        command: NovoSerialCommand,
+        params: list[int] | None = None,
+        retries: int = 4,
+    ) -> list[int]:
+        """Send a command and wait for the response, with retries."""
+        error_msgs = []
+        for retry in range(retries):
+            try:
+                return await self.async_transaction_once(command=command, params=params)
+            except (NovoSerialClientError, TimeoutError) as e:
+                _LOGGER.exception(
+                    "Communication error (attempt %d/%d).", retry + 1, retries
+                )
+                error_msgs.append(str(e))
+        error_msg = (
+            f"Failed to communicate with device after {retries} attempts: \n"
+            + "\n".join(error_msgs)
+        )
+        raise NovoSerialClientCommunicationError(error_msg)
 
     async def async_set_position(self, position: int) -> None:
         """Set the curtain position."""
