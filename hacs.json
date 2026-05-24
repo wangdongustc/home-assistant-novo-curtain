@@ -1,5 +1,5 @@
 {
     "name": "Novo RS-485 Motor Curtain Integration",
-    "homeassistant": "2025.2.4",
+    "homeassistant": "2026.5.3",
     "hacs": "2.0.5"
 }
