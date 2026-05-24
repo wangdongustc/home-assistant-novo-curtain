@@ -76,6 +76,13 @@ Contributions are welcome! Please:
 4. Test thoroughly
 5. Submit a pull request
 
+## Development Tips
+
+To create virtual devices for testing:
+```
+socat -d -d pty,raw,echo=0,link=/tmp/ttyV0 pipe
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
