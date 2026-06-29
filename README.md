@@ -6,15 +6,15 @@ A Home Assistant integration for controlling Novo N99 RS-485 motor curtains.
 
 ## Features
 
-- Control curtain position (open/close/set position)
-- Button-based open/close/jog/stop control for direct motor actions
-- Real-time position and motor state feedback via a sensor
-- RS-485 serial communication
-- Support for multiple curtains on the same bus
+- [x] Control curtain position (open/close/set position)
+- [x] Button-based open/close/jog/stop control for direct motor actions
+- [x] Real-time position and motor state feedback via a sensor
+- [x] RS-485 serial communication
+- [ ] Support for multiple curtains on the same bus
 
 ## Installation
 
-### Option 1: HACS (Recommended)
+### Option 1: HACS (Not Yet Supported)
 
 1. Ensure [HACS](https://hacs.xyz/) is installed in your Home Assistant instance.
 2. Add this repository as a custom repository in HACS:
