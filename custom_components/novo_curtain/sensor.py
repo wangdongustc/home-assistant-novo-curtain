@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Sensor platform for novo_curtain."""
 
 from __future__ import annotations

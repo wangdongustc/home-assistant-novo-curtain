@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """
 Custom integration to integrate novo_curtain with Home Assistant.
 

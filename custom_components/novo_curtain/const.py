@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Constants for novo_curtain."""
 
 from logging import Logger, getLogger
