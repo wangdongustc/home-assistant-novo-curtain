@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """Tests for Novo Curtain integration."""
 
 from unittest.mock import AsyncMock, MagicMock
