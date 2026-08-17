@@ -1,4 +1,5 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2025 Dong Wang
 """Tests for Novo Curtain integration."""
 
 from unittest.mock import AsyncMock, MagicMock
