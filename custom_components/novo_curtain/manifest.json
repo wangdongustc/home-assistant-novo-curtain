@@ -11,8 +11,6 @@
   "loggers": [
     "novo_curtain"
   ],
-  "requirements": [
-    "pyserial==3.5"
-  ],
+  "requirements": [],
   "version": "0.1.0"
 }
